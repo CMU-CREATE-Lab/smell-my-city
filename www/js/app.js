@@ -138,9 +138,15 @@ var App = {
     window.addEventListener('keyboardDidHide', onKeyboardHide);
 
     // Logic for deciding when to display the new update features page
+    // Disabled for now but we'll subscribe old users who were subbed to old 
+    // notifications topics to the new ones
     if(new Date(LocalStorage.get("last_update_notification")) < (new Date(Constants.UPDATE_NEEDING_NOTIFICATION_DATE))){
       LocalStorage.set("last_update_notification", Constants.UPDATE_NEEDING_NOTIFICATION_DATE);
       LocalStorage.set("new_user_update",true);
+      // Disabled for now but we'll subscribe old users who were subbed to old 
+      // notifications topics to the new ones
+      // Firebase.unsubscribe("ReminderNotification");
+      // Firebase.subscribe("RMD");
     }
     if (LocalStorage.get("firsttime_startup")) {
       App.navigateToPage(Constants.STARTUP_PAGE);
@@ -156,6 +162,8 @@ var App = {
         HomePage.initialize();
       }
     }
+
+
 
     // iOS fix for links
     $(document).on("click", "a[target='_blank']", function(e) {

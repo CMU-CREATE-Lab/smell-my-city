@@ -116,12 +116,18 @@ var english = {
       placeholder4: "phone number (optional)",
     },
     notification: {
-      h3: "Notifications",
+      head1: "Notifications",
       label1: "Activate notifications that are important to you",
-      label2: "Smell MyCity Notifications",
-      label3: "Note: These notifications will pop up roughly once a week.",
-      label4: "Air Quality Index Changes",
-      label5: "(notifications about pgh air quality conditions)", //???
+      head2: "Subscribed Locations",
+      label2: "Locations you wish to get notifications for",  
+      head3: "Notification Types",
+      label7: "Types of notifications you wish to get",
+      label8: "Remind me to use the app!",
+      label9: "Inform me of air quality changes", //???
+      label10: "Provide hourly and daily reports",
+      label11: "Predict changes in air quality",
+      label12: "Currently only for Pittsburgh",
+      head4: "General Notifications"
     },
     lang: {
       h3: "Language",

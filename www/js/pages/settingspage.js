@@ -12,16 +12,32 @@ var SettingsPage = {
     $('#settings').trigger('create');
   },
 
+  loadCities: function(){
+    var url = Constants.URL_API + "/api/v2/cities/hashes";
+    var container = $("#locNotificationsCollapsible").find(".ui-collapsible-content")
+    $.get(url,function(data){
+        data.forEach(function(city){
+          temp = $('<div />', {class: "ui-checkbox"})
+          $('<input />', { type: 'checkbox', id: `${city.name}_notification`}).appendTo(temp);
+          $('<label />', { 'for': `${city.name}_notification`, text: city.name, class: "ui-btn ui-corner-all ui-btn-inherit ui-btn-icon-left ui-checkbox-off" }).appendTo(temp);
+          temp.appendTo(container);
+          $(`#${city.name}_notification`).click(function(){SettingsPage.onToggleNotifications(city.hashed,`#${city.name}_notification`)});
+        });
+    });
+  },
 
   setListeners: function() {
     // avoid seeing the collapsed tabs on the first page transition
     this.expandTabs();
 
     // click listeners
-    // ticking (checkbox) listeners
-    $("#checkbox_notifications").click(SettingsPage.onToggleNotifications);
+    // ticking (checkbox) listeners 
 
-    // $("#checkbox_smcaqi_notifications").click(SettingsPage.onToggleSmellMyCityAqiNotifications);
+    $("#reminder_notifications").click(function(){SettingsPage.onToggleNotifications(Constants.REMINDER_TOPIC,"reminder_notifications")});
+    $("#aqi_notifications").click(function(){SettingsPage.onToggleNotifications(Constants.AQI_TOPIC,"aqi_notifications")});
+    $("#report_notifications").click(function(){SettingsPage.onToggleNotifications(Constants.REPORT_TOPIC,"report_notifications")});
+    $("#predict_notifications").click(function(){SettingsPage.onToggleNotifications(Constants.PREDICT_TOPIC,"predict_notifications")});    
+
     // change (text) listeners
     $("#textfield_email").change(SettingsPage.onEmailChange);
     $("#textfield_name").change(SettingsPage.onNameChange);
@@ -42,6 +58,7 @@ var SettingsPage = {
     if (!SettingsPage.didInitialLoad) {
       SettingsPage.didInitialLoad = true;
       this.loadTemplate();
+      this.loadCities();
       this.setListeners();
       this.refreshNotifications();
       this.populateFormSettings();
@@ -65,8 +82,15 @@ var SettingsPage = {
 
 
   refreshNotifications: function() {
-    // enable Smell My City general notifications checkbox
-    $("#checkbox_notifications").prop("checked", LocalStorage.get("receive_notifications")).checkboxradio("refresh");
+    // Refresh checkbox tick for each location from server
+    $("#locNotificationsCollapsible input[type=checkbox]").each(function(){
+      $(this).prop('checked', LocalStorage.get($(this).id)).checkboxradio("refresh");
+    });
+
+    $("#reminder_notifications").prop("checked", LocalStorage.get("reminder_notifications")).checkboxradio("refresh");
+    $("#aqi_notifications").prop("checked", LocalStorage.get("aqi_notifications")).checkboxradio("refresh");
+    $("#report_notifications").prop("checked", LocalStorage.get("report_notifications")).checkboxradio("refresh");
+    $("#predict_notifications").prop("checked", LocalStorage.get("predict_notifications")).checkboxradio("refresh");
   },
 
 
@@ -75,14 +99,23 @@ var SettingsPage = {
     $("#textfield_name").prop("value", LocalStorage.get("name"));
     $("#textfield_phone").prop("value", LocalStorage.get("phone"));
     $("#textfield_address").prop("value", LocalStorage.get("address"));
-    $("#checkbox_notifications").prop("checked", LocalStorage.get("receive_notifications"));
+
+    // Set checkbox tick for each location from server
+    $("#locNotificationsCollapsible input[type=checkbox]").each(function(){
+      $(this).prop('checked', LocalStorage.get($(this).id))
+    });
+
+    $("#reminder_notifications").prop("checked", LocalStorage.get("reminder_notifications"))
+    $("#aqi_notifications").prop("checked", LocalStorage.get("aqi_notifications"))
+    $("#report_notifications").prop("checked", LocalStorage.get("report_notifications"))
+    $("#predict_notifications").prop("checked", LocalStorage.get("predict_notifications"))
   },
 
 
   expandTabs: function() {
     $("#notificationsCollapsible").collapsible({collapsed: false});
     $("#reportsCollapsible").collapsible({collapsed: false});
-    //$("#langsCollapsible").collapsible({collapsed: false});
+    $("#locNotificationsCollapsible").collapsible({collapsed: false});
   },
 
 
@@ -111,48 +144,19 @@ var SettingsPage = {
 
   // callbacks
   //REMEMBER TO TURN ON FIREBASE SUBSCRIPTION ONCE TOPICS ARE MADE
-  onToggleNotifications: function() {
-    var topicName = Constants.REMINDER_NOTIFICATION_TOPIC;
+  onToggleNotifications: function(topicName, storageID) {
 
-    if (LocalStorage.get("receive_notifications")) {
-      LocalStorage.set("receive_notifications", false);
+    if (LocalStorage.get(storageID)) {
+      LocalStorage.set(storageID, false);
       Firebase.unsubscribe(topicName);
       Analytics.logOnUnsubscribeEvent(topicName);
     } else {
-      LocalStorage.set("receive_notifications", true);
+      console.log("Subbed to: " + topicName);
+      LocalStorage.set(storageID, true);
       Firebase.subscribe(topicName);
       Analytics.logOnSubscribeEvent(topicName);
     }
   },
-  onToggleSmellNotifications: function() {
-    var topicName = Constants.SMELL_REPORT_TOPIC;
-
-    if (LocalStorage.get("receive_smell_notifications")) {
-      LocalStorage.set("receive_smell_notifications", false);
-      // Firebase.unsubscribe(topicName);
-      // Analytics.logOnUnsubscribeEvent(topicName);
-    } else {
-      LocalStorage.set("receive_smell_notifications", true);
-      // Firebase.subscribe(topicName);
-      // Analytics.logOnSubscribeEvent(topicName);
-    }
-  },
-  //
-  //Renaming onTogglePittsburghAqiNotifications function to onToggleSmellMyCity
-  onToggleSmellMyCityAqiNotifications: function() {
-    var topicName = Constants.PITTSBURGH_AQI_TOPIC;
-
-    if (LocalStorage.get("receive_smcaqi_notifications")) {
-      LocalStorage.set("receive_smcaqi_notifications", false);
-      // Firebase.unsubscribe(topicName);
-      // Analytics.logOnUnsubscribeEvent(topicName);
-    } else {
-      LocalStorage.set("receive_smcaqi_notifications", true);
-      // Firebase.subscribe(topicName);
-      // Analytics.logOnSubscribeEvent(topicName);
-    }
-  },
-
 
   onEmailChange: function(event) {
     if (SettingsPage.validateEmail(this.value) || this.value == "") {

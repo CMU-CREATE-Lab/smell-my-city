@@ -35,13 +35,32 @@ var Constants = {
   NAME_KEY: "name",
   PHONE_KEY: "phone",
 
+
   // Topic strings
   GLOBAL_TOPIC: "GlobalTopic",
   PITTSBURGH_AQI_TOPIC: "pghaqi",
   SMELL_REPORT_TOPIC: "SmellReports",
 
+
+  // No Longer needed as we now pull locations from the server
+  // // Locations
+  // BAYAREA_TOPIC: "BA",
+  // LOUISVILLE_TOPIC: "LOU",
+  
+  // // Todo: Change to PGH for consistency, currently pghaqi for backcompatability
+  // PITTSBURGH_TOPIC: "pghaqi",
+  // PORTLAND_TOPIC: "PDX",
+
+ //Notification Types 
+  REMINDER_TOPIC: "RMD",
+  AQI_TOPIC: "AQI",
+  REPORT_TOPIC: "RPT",
+  PREDICT_TOPIC: "PRED",
+
   //Make associated topic on Firebase
   REMINDER_NOTIFICATION_TOPIC: "ReminderNotification",
+
+
   // Location services enums
   AuthorizationEnum: {
     NOT_REQUESTED: "not requested",

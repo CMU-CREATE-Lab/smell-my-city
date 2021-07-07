@@ -15,6 +15,11 @@ var OverviewPage = {
   setListeners: function() {
     // add back (x) button functionality
     $(".back-x").click(function() {App.navigateToPastPage()});
+    $("a[target='_blank']").on("click touchend", function(e) {
+      var el = $(this);
+      var link = el.attr("href");
+      window.location = link;
+    });
   },
 
 

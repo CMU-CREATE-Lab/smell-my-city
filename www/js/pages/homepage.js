@@ -385,10 +385,17 @@ var HomePage = {
         HomePage.clearForm();
         HomePage.request = null;
         HomePage.submittingReport = false;
-        MapPage.centerLocation = [ data["latitude"], data["longitude"] ];
-        App.navigateToPage(Constants.MAP_PAGE);
-        //Popup notifying user of successful submission
-        App.showPopup("success-popup",4000);
+
+
+        if(data.error){
+          alert(data.error);
+        }else{
+          MapPage.centerLocation = [ data["latitude"], data["longitude"] ];
+          App.navigateToPage(Constants.MAP_PAGE);
+          //Popup notifying user of successful submission
+          App.showPopup("success-popup",4000);      
+        }
+
       },
 
       error: function(msg) {
@@ -406,7 +413,12 @@ var HomePage = {
             alert("Request timed out. Please try again.");
             break;
           default:
-            alert("There was a problem submitting this report. Error code: S2");
+            if(msg.responseText.error){
+              alert(msg.responseText.error);
+            }
+            else{
+              alert("There was a problem submitting this report. Error code: S2");
+            }
             break;
         }
       },

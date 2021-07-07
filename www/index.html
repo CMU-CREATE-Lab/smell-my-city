@@ -248,10 +248,32 @@
             <p class="regulatory-agency-note">{{{contact.regulatoryAgencyNote}}}</p>
           </div>
           <div id="notificationsCollapsible" data-role="collapsible">
-            <h3>{{notification.h3}}</h3>
+            <h3>{{notification.head1}}</h3>
             <label class="settings-description">{{notification.label1}}</label>
-            <label for="checkbox_notifications">{{notification.label2}}<label class="settings-description-smaller">{{notification.label3}}</label></label>
-            <input type="checkbox" id="checkbox_notifications" />
+            <div id="locNotificationsCollapsible" data-role="collapsible">
+            <h3>{{notification.head2}}</h3>
+              <label class="settings-description">{{notification.label2}}</label>
+              <label for="bayarea_notifications">{{notification.label3}}</label>
+              <input type="checkbox" id="bayarea_notifications" />
+              <label for="louisville_notifications">{{notification.label4}}</label>
+              <input type="checkbox" id="louisville_notifications" />
+              <label for="pittsburgh_notifications">{{notification.label5}}</label>
+              <input type="checkbox" id="pittsburgh_notifications" />
+              <label for="portland_notifications">{{notification.label6}}</label>
+              <input type="checkbox" id="portland_notifications" />
+            </div>
+            <div id="typeNotificationsCollapsible" data-role="collapsible">
+            <h3>{{notification.head3}}</h3>
+              <label class="settings-description">{{notification.label7}}</label>
+              <label for="reminder_notifications">{{notification.label8}}</label>
+              <input type="checkbox" id="reminder_notifications" />
+              <label for="aqi_notifications">{{notification.label9}}</label>
+              <input type="checkbox" id="aqi_notifications" />
+              <label for="report_notifications">{{notification.label10}}</label>
+              <input type="checkbox" id="report_notifications"/>
+              <label for="predict_notifications">{{notification.label11}}<label class="settings-description-smaller">{{notification.label12}}</label></label>
+              <input type="checkbox" id="predict_notifications" />
+            </div>            
           </div>
 
       </div>

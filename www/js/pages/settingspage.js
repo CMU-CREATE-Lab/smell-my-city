@@ -19,9 +19,16 @@ var SettingsPage = {
 
     // click listeners
     // ticking (checkbox) listeners
-    $("#checkbox_notifications").click(SettingsPage.onToggleNotifications);
+    $("#bayarea_notifications").click(function(){SettingsPage.onToggleNotifications(Constants.BAYAREA_TOPIC,"bayarea_notifications")});
+    $("#louisville_notifications").click(function(){SettingsPage.onToggleNotifications(Constants.LOUISVILLE_TOPIC,"louisville_notifications")});
+    $("#pittsburgh_notifications").click(function(){SettingsPage.onToggleNotifications(Constants.PITTSBURGH_TOPIC,"pittsburgh_notifications")});
+    $("#portland_notifications").click(function(){SettingsPage.onToggleNotifications(Constants.PORTLAND_TOPIC,"portland_notifications")});    
 
-    // $("#checkbox_smcaqi_notifications").click(SettingsPage.onToggleSmellMyCityAqiNotifications);
+    $("#reminder_notifications").click(function(){SettingsPage.onToggleNotifications(Constants.REMINDER_TOPIC,"reminder_notifications")});
+    $("#aqi_notifications").click(function(){SettingsPage.onToggleNotifications(Constants.AQI_TOPIC,"aqi_notifications")});
+    $("#report_notifications").click(function(){SettingsPage.onToggleNotifications(Constants.REPORT_TOPIC,"report_notifications")});
+    $("#predict_notifications").click(function(){SettingsPage.onToggleNotifications(Constants.PREDICT_TOPIC,"predict_notifications")});    
+
     // change (text) listeners
     $("#textfield_email").change(SettingsPage.onEmailChange);
     $("#textfield_name").change(SettingsPage.onNameChange);
@@ -65,8 +72,16 @@ var SettingsPage = {
 
 
   refreshNotifications: function() {
-    // enable Smell My City general notifications checkbox
-    $("#checkbox_notifications").prop("checked", LocalStorage.get("receive_notifications")).checkboxradio("refresh");
+
+    $("#bayarea_notifications").prop("checked", LocalStorage.get("bayarea_notifications")).checkboxradio("refresh");
+    $("#louisville_notifications").prop("checked", LocalStorage.get("louisville_notifications")).checkboxradio("refresh");
+    $("#pittsburgh_notifications").prop("checked", LocalStorage.get("pittsburgh_notifications")).checkboxradio("refresh");
+    $("#portland_notifications").prop("checked", LocalStorage.get("portland_notifications")).checkboxradio("refresh");
+
+    $("#reminder_notifications").prop("checked", LocalStorage.get("reminder_notifications")).checkboxradio("refresh");
+    $("#aqi_notifications").prop("checked", LocalStorage.get("aqi_notifications")).checkboxradio("refresh");
+    $("#report_notifications").prop("checked", LocalStorage.get("report_notifications")).checkboxradio("refresh");
+    $("#predict_notifications").prop("checked", LocalStorage.get("predict_notifications")).checkboxradio("refresh");
   },
 
 
@@ -75,14 +90,23 @@ var SettingsPage = {
     $("#textfield_name").prop("value", LocalStorage.get("name"));
     $("#textfield_phone").prop("value", LocalStorage.get("phone"));
     $("#textfield_address").prop("value", LocalStorage.get("address"));
-    $("#checkbox_notifications").prop("checked", LocalStorage.get("receive_notifications"));
+
+    $("#bayarea_notifications").prop("checked", LocalStorage.get("bayarea_notifications"))
+    $("#louisville_notifications").prop("checked", LocalStorage.get("louisville_notifications"))
+    $("#pittsburgh_notifications").prop("checked", LocalStorage.get("pittsburgh_notifications"))
+    $("#portland_notifications").prop("checked", LocalStorage.get("portland_notifications"))
+
+    $("#reminder_notifications").prop("checked", LocalStorage.get("reminder_notifications"))
+    $("#aqi_notifications").prop("checked", LocalStorage.get("aqi_notifications"))
+    $("#report_notifications").prop("checked", LocalStorage.get("report_notifications"))
+    $("#predict_notifications").prop("checked", LocalStorage.get("predict_notifications"))
   },
 
 
   expandTabs: function() {
     $("#notificationsCollapsible").collapsible({collapsed: false});
     $("#reportsCollapsible").collapsible({collapsed: false});
-    //$("#langsCollapsible").collapsible({collapsed: false});
+    $("#locNotificationsCollapsible").collapsible({collapsed: false});
   },
 
 
@@ -111,48 +135,19 @@ var SettingsPage = {
 
   // callbacks
   //REMEMBER TO TURN ON FIREBASE SUBSCRIPTION ONCE TOPICS ARE MADE
-  onToggleNotifications: function() {
-    var topicName = Constants.REMINDER_NOTIFICATION_TOPIC;
+  onToggleNotifications: function(topicName, storageID) {
 
-    if (LocalStorage.get("receive_notifications")) {
-      LocalStorage.set("receive_notifications", false);
+    if (LocalStorage.get(storageID)) {
+      LocalStorage.set(storageID, false);
       Firebase.unsubscribe(topicName);
       Analytics.logOnUnsubscribeEvent(topicName);
     } else {
-      LocalStorage.set("receive_notifications", true);
+      console.log("Subbed to: " + topicName);
+      LocalStorage.set(storageID, true);
       Firebase.subscribe(topicName);
       Analytics.logOnSubscribeEvent(topicName);
     }
   },
-  onToggleSmellNotifications: function() {
-    var topicName = Constants.SMELL_REPORT_TOPIC;
-
-    if (LocalStorage.get("receive_smell_notifications")) {
-      LocalStorage.set("receive_smell_notifications", false);
-      // Firebase.unsubscribe(topicName);
-      // Analytics.logOnUnsubscribeEvent(topicName);
-    } else {
-      LocalStorage.set("receive_smell_notifications", true);
-      // Firebase.subscribe(topicName);
-      // Analytics.logOnSubscribeEvent(topicName);
-    }
-  },
-  //
-  //Renaming onTogglePittsburghAqiNotifications function to onToggleSmellMyCity
-  onToggleSmellMyCityAqiNotifications: function() {
-    var topicName = Constants.PITTSBURGH_AQI_TOPIC;
-
-    if (LocalStorage.get("receive_smcaqi_notifications")) {
-      LocalStorage.set("receive_smcaqi_notifications", false);
-      // Firebase.unsubscribe(topicName);
-      // Analytics.logOnUnsubscribeEvent(topicName);
-    } else {
-      LocalStorage.set("receive_smcaqi_notifications", true);
-      // Firebase.subscribe(topicName);
-      // Analytics.logOnSubscribeEvent(topicName);
-    }
-  },
-
 
   onEmailChange: function(event) {
     if (SettingsPage.validateEmail(this.value) || this.value == "") {
